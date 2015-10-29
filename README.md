@@ -22,4 +22,4 @@ are also included:
 * 6dFGS 
 
 ![Chisquare values for the best-fit versions of 
-cosmological models considered in the paper.](https://github.com/ja-vazquez/BOSS-DR11/blob/master/Chisq.pdf)
+cosmological models considered in the paper.](https://github.com/ja-vazquez/BOSS-DR11/blob/master/Chisq.jpg)
