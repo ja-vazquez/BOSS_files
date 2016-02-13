@@ -15,12 +15,15 @@ are located within [SimpleMC](https://github.com/ja-vazquez/SimpleMC).
 The fortran files to be plugged into the CosmoMC code
 are also included:
 
+-- Galaxies
 * LOWZ
 * CMASS
-* Lya Auto
-* Lya Cross
 * MGS
 * 6dFGS 
+
+-- Lya
+* Lya Auto
+* Lya Cross
 
 ![Chisquare values for the best-fit versions of 
 cosmological models considered in the paper.](https://github.com/ja-vazquez/BOSS-DR11/blob/master/Chisq.jpg)
