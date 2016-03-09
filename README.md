@@ -3,7 +3,7 @@ BOSS-DR11 likelihoods and chisquares.
 
 Here, we include 
 the files to describe BAO-DR11 (and others datasets) that were used in the paper
-[Cosmological implications of BAO mesuarements.](http://arxiv.org/abs/1411.1074)
+[Cosmological implications of BAO mesuarements [arXiv:1411.1074].](http://arxiv.org/abs/1411.1074)
 [Proper citations are also included in the paper.]
 
 ##Python 
