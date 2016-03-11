@@ -1,5 +1,6 @@
 import os, sys, time
 
+
 def write_ini(model, dataset):
     with open('INI_' + model+ '_' + dataset + '.ini', 'w') as f:
         
@@ -23,8 +24,11 @@ DEFAULT(batch2/lensing.ini) \n\n""")
         if 'JLA' in dataset:
             f.write('#Supernovae \n')
             f.write('DEFAULT(batch2/JLA.ini) \n\n')
+            
+        if 'blows8' in dataset:
+            f.write('DEFAULT(batch2/DR12_blows8.ini) \n\n')
 
- 	#write main file
+	#write main file
 	f.write('DEFAULT(DR12_INI.ini) \n\n')
             
         #select parameters to vary
@@ -60,8 +64,9 @@ command: |
 
 
 
-modell = ['LCDM', 'wCDM', 'OkwCDM', 'mnu', 'Neff']
-datasetl = ['PLK','PLK+DR12'] #,'PLK+DR12+JLA']
+modell = ['Alens_wCDM', 'Alens_OkwCDM']   #['LCDM', 'wCDM', 'OkwCDM', 'mnu', 'Neff']
+datasetl = ['PLK+blows8']  #['PLK','PLK+DR12'] #,'PLK+DR12+JLA']
+
 
 for model in modell:
     for dataset in datasetl:
@@ -70,8 +75,10 @@ for model in modell:
         write_wq(model, dataset)
 
         commd = """
-	nohup wq sub  wq_%s_%s.ini &
-	"""%(model,dataset)
+        nohup wq sub  wq_%s_%s.ini &
+        """%(model,dataset)
         os.system(commd)
         time.sleep(1.)
+
+
 
