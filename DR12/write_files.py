@@ -33,14 +33,10 @@ DEFAULT(batch2/lensing.ini) \n\n""")
             
         #select parameters to vary
         
-        f.write('param[omegak] = 0 %s \n'%('-0.1 0.1 0.005 0.005' if 'Ok' in model else ''))
-        
-        f.write('param[w]      = -1 %s \n'%('-2 0 0.05 0.05'   if 'w' in model else ''))
-        
+        f.write('param[omegak] = 0 %s \n'%('-0.1 0.1 0.005 0.005' if 'Ok' in model else ''))        
+        f.write('param[w]      = -1 %s \n'%('-2 0 0.05 0.05'   if 'w' in model else ''))        
         f.write('param[mnu]    = 0.06 %s \n'%('0 2 0.1 0.1'       if 'mnu' in model else ''))
-        
         f.write('param[nnu]    = 3.046 %s \n'%('2 6 0.1 0.1'      if 'Neff' in model else ''))
-        
         f.write('param[Alens]  = 1 %s \n'%('0 2 0.1 0.1'          if 'Alens' in model else ''))
         
         
@@ -70,8 +66,7 @@ def write_dist(model, dataset):
         
         f.write('file_root = chains/%s \n\n'%(name))
         f.write('INCLUDE(distparams.ini) \n\n')
-        
-        
+                
         f.write('plot%i = omegam H0 \n'%(i))
         i+=1
         if 'Ok' in model:
