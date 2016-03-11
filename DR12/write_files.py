@@ -63,21 +63,78 @@ command: |
         f.write(wq_input)
 
 
+def write_dist(model, dataset):
+    name = model+ '_' + dataset 
+    i = 1
+    with open('distparams_' + name + '.ini', 'w') as f:
+        
+        f.write('file_root = chains/%s \n\n'%(name))
+        f.write('INCLUDE(distparams.ini) \n\n')
+        
+        
+        f.write('plot%i = omegam H0 \n'%(i))
+        i+=1
+        if 'Ok' in model:
+            f.write('plot%i = omegak H0 \n'%(i))
+            i+=1
+        if 'w' in model:
+            f.write('plot%i = w H0 \n'%(i))
+            i+=1
+        if 'mnu' in model:
+            f.write('plot%i = mnu H0 \n'%(i))
+            i+=1
+        if 'Neff' in model:
+            f.write('plot%i = nnu H0 \n'%(i))
+	    i+=1
+	if 'Alens' in model:
+            f.write('plot%i = Alens H0 \n'%(i))
+            i+=1
 
-modell = ['Alens_wCDM', 'Alens_OkwCDM']   #['LCDM', 'wCDM', 'OkwCDM', 'mnu', 'Neff']
-datasetl = ['PLK+blows8']  #['PLK','PLK+DR12'] #,'PLK+DR12+JLA']
+        f.write('plot_2D_num = %i \n\n'%(i-1))
+
+        if dataset == 'PLK' or 'Alens' in model:
+	    if 'Alens' in model:
+	       models = model.replace('Alens_','')
+	    else:
+	       models = model
+
+            f.write('compare_num = 3 \n')
+	    f.write('compare1 = %s_PLK \n'%(models))
+            f.write('compare2 = %s_PLK+DR12 \n'%(models))
+            f.write('compare3 = %s_PLK+DR12+JLA \n'%(models))
+        else:
+            f.write('compare_num = 0 \n')
+
+# ------------------------
+
+Alens = True
+
+
+if Alens:
+ modell = ['Alens_LCDM','Alens_wCDM','Alens_OkwCDM']
+ datasetl = ['PLK+blows8']
+else:
+ modell = ['LCDM','wCDM','OkwCDM','mnu','Neff'] 
+ datasetl = ['PLK+DR12+JLA', 'PLK+DR12', 'PLK']
 
 
 for model in modell:
     for dataset in datasetl:
 
-        write_ini(model, dataset)
-        write_wq(model, dataset)
+        #write_ini(model, dataset)
+        #write_wq(model, dataset)
 
-        commd = """
-        nohup wq sub  wq_%s_%s.ini &
-        """%(model,dataset)
-        os.system(commd)
+        #commd = """
+        #nohup wq sub  wq_%s_%s.ini &
+        #"""%(model,dataset)
+        #os.system(commd)
+
+	write_dist(model, dataset)
+	
+	commd2 = """
+	./getdist distparams_%s_%s.ini
+	"""%(model,dataset)
+	os.system(commd2)
         time.sleep(1.)
 
 
