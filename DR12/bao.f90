@@ -211,11 +211,8 @@
     real(mcp)  :: BAO_theory(this%num_bao)
 
     rs = this%get_rs_drag(Theory) * this%rs_rescale
-!    print *,'rs', this%rs_rescale
    
     do j=1, this%num_bao
-!        print *, 'j', j, this%bao_z(j) 
-!        print *, 'type', j, this%type_bao(j) 
 !JaV now is an array
         z= this%bao_z(j)
         select case(this%type_bao(j))
@@ -223,7 +220,6 @@
             BAO_theory(j) = this%Calculator%BAO_D_v(z)/rs
         case (bao_Hz_rs)
             BAO_theory(j) = this%Calculator%Hofz_Hunit(z)*rs
-!        print *, 'H',  BAO_theory(j), z !this%Calculator%Hofz_Hunit(0.d0), rs 
         case (bao_rs_over_DV)
             BAO_theory(j) = rs/this%Calculator%BAO_D_v(z)
         case (bao_Az)
@@ -231,7 +227,6 @@
         case (bao_DA_over_rs)
 !JaV now is comoving
             BAO_theory(j) = this%Calculator%AngularDiameterDistance(z)/rs*(1+z)
-!        print *,'Da', BAO_theory(j), z !this%Calculator%AngularDiameterDistance(z), z
         case (F_AP)
             BAO_theory(j) = (1+z)*this%Calculator%AngularDiameterDistance(z)* &
                 this%Calculator%Hofz(z)
@@ -242,7 +237,6 @@
         end select
     end do
 
-!    print *,'obs',  this%bao_obs
     BAO_theory = BAO_theory - this%bao_obs
     BAO_LnLike = Matrix_QuadForm(this%bao_invcov,BAO_theory) / 2
 
