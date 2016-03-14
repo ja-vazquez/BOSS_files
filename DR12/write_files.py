@@ -87,26 +87,23 @@ def write_dist(model, dataset):
 
         f.write('plot_2D_num = %i \n\n'%(i-1))
 
-        if dataset == 'PLK' or 'Alens' in model:
-	    if 'Alens' in model:
-	       models = model.replace('Alens_','')
-	    else:
-	       models = model
+        if dataset == 'PLK':
+#	       models = model.replace('Alens_','')
 
             f.write('compare_num = 3 \n')
-	    f.write('compare1 = %s_PLK \n'%(models))
-            f.write('compare2 = %s_PLK+DR12 \n'%(models))
-            f.write('compare3 = %s_PLK+DR12+JLA \n'%(models))
+            f.write('compare1 = %s_PLK+DR12 \n'%(model))
+            f.write('compare2 = %s_PLK+DR12+JLA \n'%(model))
+	    f.write('compare3 = Alens_%s_PLK+blows8 \n'%(model))
         else:
             f.write('compare_num = 0 \n')
 
 # ------------------------
 
-Alens = True
+Alens = False
 
 
 if Alens:
- modell = ['Alens_LCDM','Alens_wCDM','Alens_OkwCDM']
+ modell = ['Alens_LCDM','Alens_wCDM','Alens_OkwCDM','Alens_mnu', 'Alens_Neff']
  datasetl = ['PLK+blows8']
 else:
  modell = ['LCDM','wCDM','OkwCDM','mnu','Neff'] 
@@ -128,8 +125,14 @@ for model in modell:
 	
 	commd2 = """
 	./getdist distparams_%s_%s.ini
-	"""%(model,dataset)
+	"""%(model, dataset)
 	os.system(commd2)
+	
+	if dataset == 'PLK':
+	   commd3 = """
+	   python stats/%s_%s_2D.py
+	   """%(model, dataset)
+	   os.system(commd3)
         time.sleep(1.)
 
 

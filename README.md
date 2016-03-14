@@ -27,3 +27,8 @@ are also included:
 
 ![Chisquare values for the best-fit versions of 
 cosmological models considered in the paper.](https://github.com/ja-vazquez/BOSS-DR11/blob/master/Chisq.jpg)
+
+# BOSS-DR12
+
+Files that are included in CosmoMC to run DR12 datasets (no data included yet).
+
