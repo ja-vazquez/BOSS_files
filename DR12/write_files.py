@@ -59,6 +59,7 @@ command: |
         f.write(wq_input)
 
 
+
 def write_dist(model, dataset):
     name = model+ '_' + dataset 
     i = 1
@@ -67,28 +68,23 @@ def write_dist(model, dataset):
         f.write('file_root = chains/%s \n\n'%(name))
         f.write('INCLUDE(distparams.ini) \n\n')
                 
-        f.write('plot%i = omegam H0 \n'%(i))
-        i+=1
+        f.write('plot%i = omegam H0 \n'%(i));        i+=1
+
         if 'Ok' in model:
-            f.write('plot%i = omegak H0 \n'%(i))
-            i+=1
+            f.write('plot%i = omegak H0 \n'%(i));    i+=1
         if 'w' in model:
-            f.write('plot%i = w H0 \n'%(i))
-            i+=1
+            f.write('plot%i = w H0 \n'%(i));         i+=1
         if 'mnu' in model:
-            f.write('plot%i = mnu H0 \n'%(i))
-            i+=1
+            f.write('plot%i = mnu H0 \n'%(i));       i+=1
         if 'Neff' in model:
-            f.write('plot%i = nnu H0 \n'%(i))
-	    i+=1
+            f.write('plot%i = nnu H0 \n'%(i));       i+=1
 	if 'Alens' in model:
-            f.write('plot%i = Alens H0 \n'%(i))
-            i+=1
+            f.write('plot%i = Alens H0 \n'%(i));     i+=1
 
         f.write('plot_2D_num = %i \n\n'%(i-1))
 
         if dataset == 'PLK':
-#	       models = model.replace('Alens_','')
+	#   models = model.replace('Alens_','')
 
             f.write('compare_num = 3 \n')
             f.write('compare1 = %s_PLK+DR12 \n'%(model))
@@ -97,43 +93,54 @@ def write_dist(model, dataset):
         else:
             f.write('compare_num = 0 \n')
 
+
+def print_info():
+     print 'Usage:'
+     print '---'
+     print 'python write_files run/dist all/Alens/[model,dataset]'
+     print '---'
+
+
+
 # ------------------------
 
-Alens = False
 
 
-if Alens:
- modell = ['Alens_LCDM','Alens_wCDM','Alens_OkwCDM','Alens_mnu', 'Alens_Neff']
- datasetl = ['PLK+blows8']
+if sys.argv[1] == 'info':
+     print_info()
+     sys.exit(1)
 else:
- modell = ['LCDM','wCDM','OkwCDM','mnu','Neff'] 
- datasetl = ['PLK+DR12+JLA', 'PLK+DR12', 'PLK']
+     to_do = '%s'%(sys.argv[1])
 
+if len(sys.argv) > 2:
+   if len(sys.argv) > 3:
+       modell = sys.argv[2].split(',')
+       datasetl = sys.argv[3].split(',')
 
-for model in modell:
-    for dataset in datasetl:
+   if sys.argv[2] == 'all':
+        modell = ['LCDM','wCDM','OkwCDM','mnu','Neff'] 
+        datasetl = ['PLK+DR12+JLA', 'PLK+DR12', 'PLK'] 
+   elif sys.argv[2] == 'Alens':
+        modell = ['Alens_LCDM','Alens_wCDM','Alens_OkwCDM','Alens_mnu', 'Alens_Neff']
+        datasetl = ['PLK+blows8']
 
-        #write_ini(model, dataset)
-        #write_wq(model, dataset)
+try:
+ for model in modell:
+     for dataset in datasetl:
 
-        #commd = """
-        #nohup wq sub  wq_%s_%s.ini &
-        #"""%(model,dataset)
-        #os.system(commd)
+	if to_do == 'run':
+           write_ini(model, dataset)
+           write_wq(model, dataset)
+#           os.system('nohup wq sub  wq_%s_%s.ini &'%(model,dataset))
 
-	write_dist(model, dataset)
+	if to_do == 'dist':
+	   write_dist(model, dataset)	
+	   os.system('./getdist distparams_%s_%s.ini'%(model, dataset))
 	
-	commd2 = """
-	./getdist distparams_%s_%s.ini
-	"""%(model, dataset)
-	os.system(commd2)
-	
-	if dataset == 'PLK':
-	   commd3 = """
-	   python stats/%s_%s_2D.py
-	   """%(model, dataset)
-	   os.system(commd3)
+	   if dataset == 'PLK':
+	      os.system('python stats/%s_%s_2D.py'%(model, dataset))
+
         time.sleep(1.)
-
-
+except:
+ print_info()
 
