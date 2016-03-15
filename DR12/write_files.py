@@ -13,9 +13,10 @@ def write_ini(model, dataset):
             f.write("""
 #Planck 2015, default just include native likelihoods (others require clik)
 DEFAULT(batch2/plik_dx11dr2_HM_v18_TT.ini)
+DEFAULT(batch2/plik_lite_TTTEEE.ini)
 DEFAULT(batch2/lowTEB.ini)
-DEFAULT(batch2/lowl.ini)
-DEFAULT(batch2/lensing.ini) \n\n""")
+DEFAULT(batch2/lensing.ini)
+DEFAULT(batch2/lowl.ini)  \n\n""")
         
         if 'DR12' in dataset:
             f.write('#DR12 BAO-RSD \n')
