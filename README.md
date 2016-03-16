@@ -37,5 +37,5 @@ Files that are included in CosmoMC to run DR12 datasets (no data included yet).
 
 ##SimpleMC calibration
 We calibrated Planck SimpleMC by using **base_Alens/plikHM_TT_lowTEB** with CosmoMC
-[](https://github.com/ja-vazquez/BOSS_files/blob/master/Simple_Cosmo_PLK.jpg)
+![Calibration](https://github.com/ja-vazquez/BOSS_files/blob/master/Simple_Cosmo_PLK.jpg)
 
