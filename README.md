@@ -29,7 +29,7 @@ are also included:
 cosmological models considered in the paper.
 
 ![Chisquare values for the best-fit versions of 
-cosmological models considered in the paper.](https://github.com/ja-vazquez/BOSS-DR11/blob/master/Chisq.jpg)
+cosmological models considered in the paper.](https://github.com/ja-vazquez/BOSS_files/blob/master/Chisq.jpg)
 
 # BOSS-DR12
 
@@ -37,5 +37,5 @@ Files that are included in CosmoMC to run DR12 datasets (no data included yet).
 
 ##SimpleMC calibration
 We calibrated Planck SimpleMC by using **base_Alens/plikHM_TT_lowTEB** with CosmoMC
-[](https://github.com/ja-vazquez/BOSS-DR11/blob/master/Simple_Cosmo_PLK.jpg)
+[](https://github.com/ja-vazquez/BOSS_files/blob/master/Simple_Cosmo_PLK.jpg)
 
