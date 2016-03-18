@@ -106,10 +106,10 @@ else:
 if len(sys.argv) > 2:
 
    if sys.argv[2] == 'all':
-        modell = ['LCDM','wCDM','OkwCDM','mnu','Neff']
+        modell = ['LCDM','wCDM','OkwCDM']
         datasetl = ['PLK+DR12+JLA', 'PLK+DR12', 'PLK']
    elif sys.argv[2] == 'neutrino':
-        modell = ['mnu','Neff','Alens_mnu','Alens_Neff']
+        modell = ['mnu','Neff','Alens_mnu','Alens_Neff','Afs8_mnu','Afs8_Neff','Alens_Afs8_mnu','Alens_Afs8_Neff']
         datasetl = ['PLK+BAO12', 'PLK+DR12']
    elif sys.argv[2] == 'fs8':
 	modell = ['Afs8_LCDM','ABfs8_LCDM']
