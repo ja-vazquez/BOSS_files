@@ -33,8 +33,8 @@ DEFAULT(batch2/lowTEB.ini)
         f.write('param[mnu]    = 0.06 %s \n'%('0 2 0.1 0.1'       if 'mnu' in model else ''))
         f.write('param[nnu]    = 3.046 %s \n'%('2 6 0.1 0.1'      if 'Neff' in model else ''))
         f.write('param[Alens]  = 1 %s \n'%('0 2 0.1 0.1'          if 'Alens' in model else ''))
-	f.write('param[Afs8]   = 1 %s \n'%('0 2 0.1 0.1'          if 'Afs8' or 'ABfs8' in model else ''))
-	f.write('param[Bfs8]   = 0 %s \n'%('-1 1 0.1 0.1'         if 'ABfs8' in model else ''))
+	f.write('param[Afs8]   = 1 %s \n'%('0 2 0.1 0.1'          if 'Afs8' in model or 'ABfs8' in model else ''))
+	f.write('param[Bfs8]   = 0 %s \n'%('-2 1 0.1 0.1'         if 'ABfs8' in model else ''))
 
 def write_wq(model, dataset):
     name = model+ '_' + dataset
