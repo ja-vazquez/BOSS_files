@@ -4,7 +4,7 @@ class Info():
     def __init__(self):
         print 'Usage:'
         print '---'
-        print 'python run_files  all/neut/fs8[models, datasets] [wini,wwq,wrun]'
+        print 'python run_files  all/neut/fs8[models, datasets] [wini,wwq,wrun,wdist]'
         print 'i.e.'
         print 'python run_files LCDM,wCDM,OkCDM PLK,PLK+DR12'
         print ''
@@ -14,10 +14,11 @@ class Info():
 
 
 class Tasks:
-    def __init__(self, model, dataset):
+    def __init__(self, model, dataset, chains_dir):
         self.model = model
         self.dataset = dataset
         self.full_name = self.model + '_' + self.dataset
+	self.chains  = chains_dir
 
 
     def write_ini(self):
@@ -56,7 +57,7 @@ DEFAULT(batch2/lowTEB.ini)
 
 
 
-    def write_wq(self, N =20, threads =5, chains_dir ='chains/'):
+    def write_wq(self, N =20, threads =5):
         """Write wq files to run CosmoMC on the BNL cluster"""
         name = self.full_name
 
@@ -69,7 +70,7 @@ job_name: %s
 command: |
      source ~/.bashrc;
      OMP_NUM_THREADS=%%threads%% mpirun -hostfile %%hostfile%% ./cosmomc INI_%s.ini > %slogs/INI_%s.log 2>%slogs/INI_%s.err
-        """%(N, threads, name, name, chains_dir, name, chains_dir, name)
+        """%(N, threads, name, name, self.chains, name, self.chains, name)
         with open('wq_' + name + '.ini', 'w') as f:
             f.write(wq_input)
 
@@ -83,7 +84,7 @@ command: |
         i = 1
 
         with open('distparams_' + name + '.ini', 'w') as f:
-            f.write('file_root = chains/%s \n\n'%(name))
+            f.write('file_root = %s%s \n\n'%(self.chains, name))
             f.write('INCLUDE(distparams.ini) \n\n')
 
             f.write('plot%i = omegam H0 \n'%(i));        i+=1
