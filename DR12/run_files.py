@@ -5,7 +5,7 @@ from tasks import *
 
 N_cores = 20
 threads = 5
-chains_dir = 'chains_new/'
+chains_dir = 'chains/'
 to_do = 'all'
 
 if len(sys.argv) > 2:

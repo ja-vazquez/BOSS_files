@@ -43,6 +43,8 @@ DEFAULT(batch2/lowTEB.ini)
 
             #write main file
             f.write('DEFAULT(DR12_INI.ini) \n\n')
+	    f.write('#Folder where files (chains, checkpoints, etc.) are stored \n')
+	    f.write('root_dir = %s \n\n'%(self.chains))
 
 
             #select parameters to vary
@@ -51,7 +53,7 @@ DEFAULT(batch2/lowTEB.ini)
             f.write('param[mnu]    = 0.06 %s \n'%('0 2 0.1 0.1'       if 'mnu' in self.model else ''))
             f.write('param[nnu]    = 3.046 %s \n'%('2 6 0.1 0.1'      if 'Neff' in self.model else ''))
             f.write('param[Alens]  = 1 %s \n'%('0 2 0.1 0.1'          if 'Alens' in self.model else ''))
-            f.write('param[Afs8]   = 1 %s \n'%('0 2 0.1 0.1'          if 'Afs8' in self.model or 'ABfs8' in self.model else ''))
+            f.write('param[Afs8]   = 1 %s \n'%('0 2 0.1 0.1'          if ('Afs8' in self.model or 'ABfs8' in self.model) else ''))
             f.write('param[Bfs8]   = 0 %s \n'%('-2 1 0.1 0.1'         if 'ABfs8' in self.model else ''))
 
 
