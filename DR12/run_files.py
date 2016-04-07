@@ -31,7 +31,7 @@ try:
                 os.system('nohup wq sub  wq_%s_%s.ini &'%(model,dataset))
             if to_do in 'wdist':
                 TD.write_dist()
-		os.system('./getdist distparams_%s_%s.ini'%(model, dataset))
+        os.system('./getdist distparams_%s_%s.ini'%(model, dataset))
 
             time.sleep(1.)
 except:
