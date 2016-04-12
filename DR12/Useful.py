@@ -49,7 +49,8 @@ DEFAULT(batch2/lowTEB.ini)
 
             #select parameters to vary
             f.write('param[omegak] = 0 %s \n'%('-0.1 0.1 0.005 0.005' if 'Ok' in self.model else ''))
-            f.write('param[w]      = -1 %s \n'%('-2 0 0.05 0.05'      if 'w' in self.model else ''))
+            f.write('param[w]      = -1 %s \n'%('-2 0 0.05 0.05'      if 'wo' in self.model else ''))
+	    f.write('param[wa]     = 0 %s  \n'%('-2 2 0.05 0.05'      if 'wa' in self.model else ''))
             f.write('param[mnu]    = 0.06 %s \n'%('0 2 0.1 0.1'       if 'mnu' in self.model else ''))
             f.write('param[nnu]    = 3.046 %s \n'%('2 6 0.1 0.1'      if 'Neff' in self.model else ''))
             f.write('param[Alens]  = 1 %s \n'%('0 2 0.1 0.1'          if 'Alens' in self.model else ''))
@@ -92,7 +93,8 @@ command: |
             f.write('plot%i = omegam H0 \n'%(i));        i+=1
 
             if 'Ok' in self.model:    f.write('plot%i = omegak H0 \n'%(i));    i+=1
-            if 'w' in self.model:     f.write('plot%i = w H0 \n'%(i));         i+=1
+            if 'wo' in self.model:    f.write('plot%i = w H0 \n'%(i));         i+=1
+ 	    if 'wa' in self.model:    f.write('plot%i = w wa \n'%(i));	       i+=1
             if 'mnu' in self.model:   f.write('plot%i = mnu H0 \n'%(i));       i+=1
             if 'Neff' in self.model:  f.write('plot%i = nnu H0 \n'%(i));       i+=1
             if 'Alens' in self.model: f.write('plot%i = Alens H0 \n\n'%(i));     i+=1

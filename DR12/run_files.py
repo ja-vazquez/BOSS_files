@@ -1,5 +1,5 @@
 import os, sys, time
-from tasks import *
+from Useful import *
 
 
 
@@ -8,15 +8,20 @@ threads = 5
 chains_dir = 'chains/'
 to_do = 'all'
 
+
 if len(sys.argv) > 2:
-    models   = sys.argv[1].split(',')
-    datasets = sys.argv[2].split(',')
-    if len(sys.argv) > 3:
-        to_do = sys.argv[3]
+    to_do    = sys.argv[1]
+    models   = sys.argv[2].split(',')
+    datasets = sys.argv[3].split(',')
 else:
     Info()
     sys.exit(1)
 
+
+if  'all' in models:
+   models = ['LCDM','OkLCDM', 'woCDM', 'OkwoCDM', 'wowaCDM', 'OkwowaCDM']
+if  'all' in datasets:
+   datasets = ['PLK+DR12+JLA','PLK+DR12'] 
 
 try:
     for model in models:
@@ -31,7 +36,7 @@ try:
                 os.system('nohup wq sub  wq_%s_%s.ini &'%(model,dataset))
             if to_do in 'wdist':
                 TD.write_dist()
-        os.system('./getdist distparams_%s_%s.ini'%(model, dataset))
+        	os.system('./getdist distparams_%s_%s.ini'%(model, dataset))
 
             time.sleep(1.)
 except:
