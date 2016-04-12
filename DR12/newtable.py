@@ -41,15 +41,15 @@ def pass_to_latex(model, data_set, params):
     file = model + '_' + data_set
 
         #function value returns:  avg, std*times
-    par_Omh2 = r"%.4f (%i)  "%(value(file, 'omegamh2*', sig_times= 10**4 ))
-    par_Om   = r"%.3f (%i)  "%(value(file, 'omegam*', 10**3))
-    par_H0   = r"%.1f (%i)  "%(value(file, 'H0*',   10**1))
-    par_Ok   = r"%.4f (%i) "%(value(file, 'omegak',  10**4)) if 'Ok' in model else r"..."
-    par_w    = r"%.2f (%i) "%(value(file, 'w',       10**2)) if 'w' in model  else r"..."
-    par_wa   = r"%.2f (%i) "%(value(file, 'wa',       10**2))if 'wa' in model else r"..."
-    par_nnu  = r"%.1f (%i) "%(value(file, 'nnu',     10**1)) if 'Neff' in model else r"..."
+    par_Omh2 = r"%.4f (%i) "%(value(file, 'omegamh2*', sig_times= 10**4 ))
+    par_Om   = r"%.3f (%i) "%(value(file, 'omegam*', 10**3))
+    par_H0   = r"%.1f (%i) "%(value(file, 'H0*',     10**1))
+    par_Ok   = r"%.4f (%i) "%(value(file, 'omegak',  10**4)) if 'Ok'    in model else r"..."
+    par_w    = r"%.2f (%i) "%(value(file, 'w',       10**2)) if 'w'     in model else r"..."
+    par_wa   = r"%.2f (%i) "%(value(file, 'wa',      10**2)) if 'wa'    in model else r"..."
+    par_nnu  = r"%.1f (%i) "%(value(file, 'nnu',     10**1)) if 'Neff'  in model else r"..."
     par_Alen = r"%.2f (%i) "%(value(file, 'Alens',   10**2)) if 'Alens' in model else r"..."
-    par_Afs8 = r"%.2f (%i) "%(value(file, 'Afs8',    10**2)) if 'Afs8' in model else r"..."
+    par_Afs8 = r"%.2f (%i) "%(value(file, 'Afs8',    10**2)) if 'Afs8'  in model else r"..."
 
     model_name = latex_name(model,    sep ='_')
     data_name  = latex_name(data_set, sep ='+')
