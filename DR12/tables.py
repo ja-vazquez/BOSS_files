@@ -3,14 +3,14 @@
 import pandas as pd
 
 dir  = 'table/'
-file_output = dir + 'newtable_test.tex'
-standard_table = True
+file_output = dir + 'CosmologicalParameters2.tex'
+standard_table = False
 
 if standard_table:
-    models  = ['LCDM', 'OkLCDM', 'woCDM', 'OkwoCDM', 'OkwowaCDM']
-    datas   = ['PLK+DR12', 'PLK+DR12+JLA']
+    models  = ['LCDM', 'OkLCDM', 'woCDM', 'OkwoCDM', 'wowaCDM', 'OkwowaCDM']
+    datas   = ['PLK+BAO12', 'PLK+DR12', 'PLK+DR12+JLA']
     params  = ['Omh2', 'Om', 'H0', 'Ok', 'w', 'wa']
-    colsize = (2., 4., 2., 1.8, 2.5, 1.8, 1.8, 1.8)    #In centimeters
+    colsize = (2., 3., 1.8, 1.8, 1.8, 1.8, 1.8, 1.8)    #In centimeters
     decimal = (4, 3, 1, 4, 2, 2)                         #decimal points
 
 else:
@@ -19,7 +19,7 @@ else:
                'LCDM_Afs8','LCDM_ABfs8']
     datas   = ['PLK+DR12']
     params  = ['H0', 'Neff', 'mnu', 'Alens', 'Afs8', 'ABfs8']
-    colsize = (3.9, 3.3, 2.5, 1.7, 1.6, 1.6, 1.6, 1.6)
+    colsize = (3.5, 3., 1.8, 1.6, 1.6, 1.6, 1.6, 1.6)
     decimal = (1, 2, 2, 2, 2, 1)
 
 
@@ -37,14 +37,15 @@ params_getdist = {'Omh2':'omegamh2*', 'Om':'omegam*', 'H0': 'H0*', 'Ok':'omegak'
                   'Afs8':'Afs8', 'ABfs8':'Bfs8'}
 
 params_latex = {'Omh2':'$\Omega_{\\rm m} h^{2}$', 'Om':'$\Omega_{\\rm m}$',
-               'H0':'$H_0$', 'Ok':'$\Omega_{\\rm K}$', 'w':'$w_0$', 'wa':'$w_a$',
+                'H0':'$H_0$', 'Ok':'$\Omega_{\\rm K}$', 'w':'$w_0$', 'wa':'$w_a$',
                 'Neff':'$N_{eff}$', 'mnu':'$\sum m_{\nu}$',
                 'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$B_{f\sigma_8}$'}
 
 latex_names  = {'LCDM':'$\\Lambda$CDM', 'OkLCDM':'$o$CDM', 'woCDM':'$w$CDM',
-                 'OkwoCDM':'$ow$CDM', 'OkwowaCDM':'$w_0w_a$CDM',
+                'wowaCDM':'$w_0w_a$CDM',
+                'OkwoCDM':'$ow$CDM', 'OkwowaCDM':'$ow_0w_a$CDM',
                 'PLK':'Planck', 'BAO12':'BAO', 'DR12':'BAO+RSD', 'JLA':'SN',
-                 'mnu':'LCDM+$m_{\nu}$', 'Neff':'LCDM+$N_{eff}$',
+                'mnu':'$\\Lambda$CDM+$m_{\\nu}$', 'Neff':'$\\Lambda$CDM+$N_{eff}$',
                 'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$B_{f\sigma_8}$'}
 
 
@@ -74,9 +75,12 @@ def main_table(model, data):
     for i, k in enumerate(params):
         try:
             tmp = '%.' + '%if'%(decimal[i])
-            mean_values = tmp%(float(stats.ix[params_getdist[k]]['mean']))
-            sigma_values= float(stats.ix[params_getdist[k]]['sddev'])*10**(decimal[i])
-            full_line.append('%s (%i)'%(mean_values, sigma_values))
+            if 'mnu' in k:
+                full_line.append('$<$ %1.2f'%(float(stats.ix[params_getdist[k]]['upper2'])))
+            else:
+                mean_values = tmp%(float(stats.ix[params_getdist[k]]['mean']))
+                sigma_values= float(stats.ix[params_getdist[k]]['sddev'])*10**(decimal[i])
+                full_line.append('%s (%i)'%(mean_values, sigma_values))
         except:
             full_line.append('...')
 
@@ -97,10 +101,12 @@ outputfile.write(r"\hline"+'\n')
 pnames, amps = [], []
 for i, k in enumerate(params):
      pnames.append(params_latex[k])
-     amps.append('km s$^{-1}$ Mpc$^{-1}$' if 'H0' in k else '')
+     if   'H0'  in k: amps.append('km s$^{-1}$ Mpc$^{-1}$')
+     elif 'mnu' in k: amps.append(('95\\% limit'))
+     else:            amps.append('')
 
 outputfile.write(r"Cosmological  & Data Sets & %s \\"%("&".join(pnames))     +'\n')
-outputfile.write(r"Model & & %s                   \\"%("&".join(amps))       +'\n')
+outputfile.write(r"Model         &           & %s \\"%("&".join(amps))       +'\n')
 outputfile.write(r"\hline"                                                   +'\n')
 
 
@@ -116,8 +122,8 @@ for model in models:
         full_line = main_table(model, data)
         outputfile.write(r"%s                     \\"%("&".join(full_line))  +'\n')
     i+=1
-   # if i == 4 or i == 8:
-   #     outputfile.write(r"\hline"                                               +'\n')
+    if i == 4 or i == 8:
+        outputfile.write(r"\hline"                                               +'\n')
 outputfile.write(r"\hline"                                               +'\n')
 
 
