@@ -19,9 +19,10 @@ else:
 
 
 if  'all' in models:
+#   models = ['wowaCDM']
    models = ['LCDM','OkLCDM', 'woCDM', 'OkwoCDM', 'wowaCDM', 'OkwowaCDM']
 if  'all' in datasets:
-   datasets = ['PLK+DR12+JLA','PLK+DR12'] 
+   datasets = ['PLK+DR12+JLA','PLK+DR12','PLK+BAO12'] 
 
 try:
     for model in models:

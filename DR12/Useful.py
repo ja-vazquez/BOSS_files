@@ -39,7 +39,7 @@ DEFAULT(batch2/lowTEB.ini)
             if 'BAO12' in self.dataset: f.write('DEFAULT(batch2/DR12_blows8.ini) \n\n')
             if 'DR12'  in self.dataset: f.write('DEFAULT(batch2/DR12.ini) \n\n')
             if 'JLA'   in self.dataset: f.write('DEFAULT(batch2/JLA.ini) \n\n')
-
+	    if 'HST'   in self.dataset: f.write('DEFAULT(batch2/HST.ini) \n\n')
 
             #write main file
             f.write('DEFAULT(DR12_INI.ini) \n\n')
