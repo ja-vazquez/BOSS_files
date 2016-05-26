@@ -4,7 +4,7 @@ import pandas as pd
 
 dir  = 'table/'
 file_output = dir + 'CosmologicalParameters2.tex'
-standard_table = False
+standard_table = True
 
 if standard_table:
     models  = ['LCDM', 'OkLCDM', 'woCDM', 'OkwoCDM', 'wowaCDM', 'OkwowaCDM']
@@ -117,15 +117,18 @@ i =0
 for model in models:
     for data in datas:
         name =  dir + model + '_' + data + '.margestats'
-        stats = pd.read_table(name, skiprows = [0,1], sep='\s+', index_col = 0,
+        try:
+            stats = pd.read_table(name, skiprows = [0,1], sep='\s+', index_col = 0,
                       names= file_names)
-        full_line = main_table(model, data)
-        outputfile.write(r"%s                     \\"%("&".join(full_line))  +'\n')
-    i+=1
-    if i == 4 or i == 8:
-        outputfile.write(r"\hline"                                               +'\n')
+            full_line = main_table(model, data)
+            outputfile.write(r"%s                     \\"%("&".join(full_line))  +'\n')
+            #i+=1
+            #if i == 4 or i == 8:
+            #    outputfile.write(r"\hline"                                               +'\n')
+        except:
+            pass
+    outputfile.write(r"\hline"                                               +'\n')        
 outputfile.write(r"\hline"                                               +'\n')
-
 
 
 
