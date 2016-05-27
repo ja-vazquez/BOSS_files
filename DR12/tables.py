@@ -3,26 +3,30 @@
 import pandas as pd
 
 dir  = 'table/'
-file_output = dir + 'CosmologicalParameters2.tex'
-standard_table = True
+file_output = dir + 'CosmologicalParameters3.tex'
+table = 3
 
-if standard_table:
+if table == 1:
     models  = ['LCDM', 'OkLCDM', 'woCDM', 'OkwoCDM', 'wowaCDM', 'OkwowaCDM']
-    datas   = ['PLK+BAO12', 'PLK+DR12', 'PLK+DR12+JLA']
+    datas   = ['PLK', 'PLK+BAO12', 'PLK+JLA', 'PLK+DR12', 'PLK+DR12+JLA']
     params  = ['Omh2', 'Om', 'H0', 'Ok', 'w', 'wa']
-    colsize = (2., 3., 1.8, 1.8, 1.8, 1.8, 1.8, 1.8)    #In centimeters
+    colsize = (2., 3.5, 1.6, 1.6, 1.6, 2., 1.6, 1.6)    #In centimeters
     decimal = (4, 3, 1, 4, 2, 2)                         #decimal points
 
-else:
+elif table == 2:
     models  = ['mnu', 'mnu_Alens', 'mnu_Afs8', 'mnu_Alens_Afs8',
               'Neff', 'Neff_Alens', 'Neff_Afs8', 'Neff_Alens_Afs8',
                'LCDM_Afs8','LCDM_ABfs8']
     datas   = ['PLK+DR12']
     params  = ['H0', 'Neff', 'mnu', 'Alens', 'Afs8', 'ABfs8']
-    colsize = (3.5, 3., 1.8, 1.6, 1.6, 1.6, 1.6, 1.6)
+    colsize = (2.5, 3., 2., 1.6, 1.6, 1.6, 1.6, 1.6)
     decimal = (1, 2, 2, 2, 2, 1)
-
-
+else:
+    models  = ['OkwoCDM_Neff', 'Neff_mnu', 'Neff']
+    datas   = ['HST', 'PLK+BAO12', 'PLK+DR12', 'PLK+DR12+JLA']
+    params  = ['Om', 'H0', 'Ok', 'w', 'Neff', 'mnu']
+    colsize = (2.5, 3.5, 1.6, 2., 1.6, 1.6, 1.6, 1.6 )
+    decimal = [3, 1, 4, 2, 2, 2]
 
 
 
@@ -38,14 +42,14 @@ params_getdist = {'Omh2':'omegamh2*', 'Om':'omegam*', 'H0': 'H0*', 'Ok':'omegak'
 
 params_latex = {'Omh2':'$\Omega_{\\rm m} h^{2}$', 'Om':'$\Omega_{\\rm m}$',
                 'H0':'$H_0$', 'Ok':'$\Omega_{\\rm K}$', 'w':'$w_0$', 'wa':'$w_a$',
-                'Neff':'$N_{eff}$', 'mnu':'$\sum m_{\nu}$',
+                'Neff':'$N_{\\rm eff}$', 'mnu':'$\sum m_{\nu}$',
                 'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$B_{f\sigma_8}$'}
 
 latex_names  = {'LCDM':'$\\Lambda$CDM', 'OkLCDM':'$o$CDM', 'woCDM':'$w$CDM',
                 'wowaCDM':'$w_0w_a$CDM',
                 'OkwoCDM':'$ow$CDM', 'OkwowaCDM':'$ow_0w_a$CDM',
                 'PLK':'Planck', 'BAO12':'BAO', 'DR12':'BAO+RSD', 'JLA':'SN',
-                'mnu':'$\\Lambda$CDM+$m_{\\nu}$', 'Neff':'$\\Lambda$CDM+$N_{eff}$',
+                'mnu':'$m_{\\nu}$', 'Neff':'$N_{\\rm eff}$',
                 'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$B_{f\sigma_8}$'}
 
 
