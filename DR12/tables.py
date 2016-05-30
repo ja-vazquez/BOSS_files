@@ -23,7 +23,7 @@ elif table == 2:
     decimal = (1, 2, 2, 2, 2, 1)
 else:
     models  = ['OkwoCDM_Neff', 'Neff_mnu', 'Neff']
-    datas   = ['HST', 'PLK+BAO12', 'PLK+DR12', 'PLK+DR12+JLA']
+    datas   = ['HST', 'PLK', 'PLK+BAO12', 'PLK+DR12', 'PLK+DR12+JLA']
     params  = ['Om', 'H0', 'Ok', 'w', 'Neff', 'mnu']
     colsize = (2.5, 3.5, 1.6, 2., 1.6, 1.6, 1.6, 1.6 )
     decimal = [3, 1, 4, 2, 2, 2]
@@ -131,8 +131,8 @@ for model in models:
             #    outputfile.write(r"\hline"                                               +'\n')
         except:
             pass
-    outputfile.write(r"\hline"                                               +'\n')        
-outputfile.write(r"\hline"                                               +'\n')
+    outputfile.write(r"\hline"                                               +'\n')
+#outputfile.write(r"\hline"                                               +'\n')
 
 
 
