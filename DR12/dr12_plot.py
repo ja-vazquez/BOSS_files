@@ -168,3 +168,46 @@ g.add_legend(['PLANCK+SN','PLANCK+BAO', 'PLANCK+BAO+RSD', 'PLANCK+BAO+RSD+SN'],
 g.export('wowaCDM_all.pdf')
 
 
+
+
+roots = ['wowaCDM_PLK+JLA','wowaCDM_PLK+BAO12', 'wowaCDM_PLK+DR12', 'wowaCDM_PLK+DR12+JLA']
+
+g= plots.getSinglePlotter(chain_dir = dir_name, ratio=1., analysis_settings={'smooth_scale_2D': -1.})
+#g.plot_2d(roots, param_pair=['w','wa'], filled=True, legend_labels=False, line_args={'lw':2,  'ls':'-'},
+#             lims=[-1.8,0,-1.9,1.5])
+
+
+samples = g.sampleAnalyser.samplesForRoot('wowaCDM_PLK+DR12+JLA')
+p = samples.getParams()
+
+samples2 = g.sampleAnalyser.samplesForRoot('wowaCDM_PLK+DR12')
+p2 = samples2.getParams()
+
+samples3 = g.sampleAnalyser.samplesForRoot('wowaCDM_PLK+BAO12')
+p3 = samples3.getParams()
+
+samples4 = g.sampleAnalyser.samplesForRoot('wowaCDM_PLK+JLA')
+p4 = samples4.getParams()
+
+ppoint= 0.265905
+
+samples.addDerived( p.w + ppoint*p.wa, name='wz', label='w_p')
+samples2.addDerived(p2.w + ppoint*p2.wa, name='wz', label='w_p')
+samples3.addDerived(p3.w + ppoint*p3.wa, name='wz', label='w_p')
+samples4.addDerived(p4.w + ppoint*p4.wa, name='wz', label='w_p')
+
+samples.updateBaseStatistics()
+samples2.updateBaseStatistics()
+g.plot_2d(roots, param_pair=['wz','wa'], filled=True, legend_labels=False, line_args={'lw':2,  'ls':'-'},
+		             lims=[-1.6,-0.3,-1.9,1.5])
+
+g.settings.axes_fontsize = 20
+g.settings.lab_fontsize = 25
+g.settings.alpha_filled_add =0.9
+g.add_y_marker(0)
+g.add_x_marker(-1)
+
+g.add_legend(['PLANCK+SN','PLANCK+BAO', 'PLANCK+BAO+RSD', 'PLANCK+BAO+RSD+SN'], 
+		             colored_text=True,  legend_loc='upper right')
+
+g.export('wowaCDM_all_pivot.pdf')
