@@ -55,7 +55,7 @@
         real(mcp), allocatable, dimension(:) :: alpha_perp_file,alpha_plel_file
         real(mcp), allocatable ::  prob_file(:,:)
         real(mcp) dalpha_perp, dalpha_plel
-        integer alpha_npoints
+        integer alpha_npoints, alpha_npoints_per
     contains
     procedure :: LogLike => BAO_DRLyauto_loglike
     procedure :: InitProbDist => BAO_DRLyauto_InitProbDist
@@ -96,8 +96,7 @@
             allocate(MGSLikelihood::this)
         else if (Datasets%Name(i)=='DR11CMASS') then
             allocate(DR11Likelihood::this)
-        else if (Datasets%Name(i)=='Lyauto') then
-           print *, 'hwiouedhuwe'
+        else if (Datasets%Name(i)=='Lyauto' .or. Datasets%Name(i)=='Lycross') then
             allocate(DRLyautoLikelihood::this)
         else
             allocate(TBAOLikelihood::this)
@@ -386,11 +385,13 @@
     real(mcp) :: tmp0,tmp1,tmp2, tmp3,tmp4, tmp
     integer ios,ii,jj, nn
     Type(TTExtFile) F
-    integer :: alpha_npoints
+    integer :: alpha_npoints, alpha_npoints_per
+    character(10) :: name_ly
 
     alpha_npoints = Ini%Read_Int('alpha_npoints')
-    allocate(this%alpha_perp_file(alpha_npoints),this%alpha_plel_file(alpha_npoints))
-    allocate(this%prob_file(alpha_npoints,alpha_npoints))
+    alpha_npoints_per = Ini%Read_Int('alpha_npoints_per')
+    allocate(this%alpha_perp_file(alpha_npoints_per),this%alpha_plel_file(alpha_npoints))
+    allocate(this%prob_file(alpha_npoints_per,alpha_npoints))
 
     
     call F%Open(Ini%ReadRelativeFileName('prob_dist'))
@@ -398,7 +399,9 @@
     !JaV
     ios = 0
     nn = 0
-    do while (ios.eq.0)
+name_ly = Ini%Read_String('name')
+    if (name_ly=='Lyauto') then 
+      do while (ios.eq.0)
         read (F%unit,*,iostat=ios) tmp0,tmp1,tmp2,tmp3,tmp4
         if (ios .ne. 0) cycle
         nn = nn + 1
@@ -408,17 +411,21 @@
         this%alpha_perp_file(ii)   = tmp0
         this%alpha_plel_file(jj)   = tmp1
         this%prob_file(ii,jj)      = tmp4/2.0  !prob got from chis2
-    enddo
+      enddo
+   elseif (name_ly=='Lycross') then
+      do while (ios.eq.0)
+        read (F%unit,*,iostat=ios) tmp0,tmp1,tmp2
+        if (ios .ne. 0) cycle
+        nn = nn + 1
 
-    !do ii=1, alpha_npoints
-    !    do jj=1, alpha_npoints
-    !        read (F%unit,*,iostat=ios) tmp0,tmp1,tmp2
-    !        if (ios /= 0) call MpiStop('Error reading BR11 BAO file')
-    !        this%alpha_perp_file(ii)   = tmp0
-    !        this%alpha_plel_file(jj)   = tmp1
-    !        this%prob_file(ii,jj)      = tmp2
-    !    end do
-    !end do
+        ii = 1 +    ((nn-1)/alpha_npoints)
+        jj = 1 + mod((nn-1),alpha_npoints)
+        this%alpha_perp_file(ii)   = tmp0
+        this%alpha_plel_file(jj)   = tmp1
+        this%prob_file(ii,jj)      = tmp2/2.0
+      enddo
+   endif        
+
     call F%Close()
 
     this%dalpha_perp=this%alpha_perp_file(2)-this%alpha_perp_file(1)
@@ -427,10 +434,10 @@
 
     !this%prob_file=this%prob_file/ maxval(this%prob_file)
     this%alpha_npoints = alpha_npoints
-
+    this%alpha_npoints_per = alpha_npoints_per
 
     tmp=1.d30
-    do ii=1,alpha_npoints
+    do ii=1,alpha_npoints_per
     do jj=1,alpha_npoints
         if(this%prob_file(ii,jj).lt.tmp) then
            tmp = this%prob_file(ii,jj)
@@ -440,7 +447,7 @@
     
     !JaV   
     !Normalize distribution (so that the peak value is 1.0)
-    do ii=1,alpha_npoints
+    do ii=1,alpha_npoints_per
     do jj=1,alpha_npoints
         this%prob_file(ii,jj) = exp(-this%prob_file(ii,jj) + tmp)
     enddo
@@ -469,7 +476,7 @@
     alpha_plel=(H_fid*rd_fid)/((this%Calculator%Hofz_Hunit(z))*rsdrag_theory)
     print *, 'alphas', alpha_perp, alpha_plel
 
-    if ((alpha_perp < this%alpha_perp_file(1)).or.(alpha_perp >this%alpha_perp_file(this%alpha_npoints-1)).or. &
+    if ((alpha_perp < this%alpha_perp_file(1)).or.(alpha_perp >this%alpha_perp_file(this%alpha_npoints_per-1)).or. &
         &   (alpha_plel < this%alpha_plel_file(1)).or.(alpha_plel >this%alpha_plel_file(this%alpha_npoints-1))) then
     BAO_DRLyauto_loglike = logZero
     else
