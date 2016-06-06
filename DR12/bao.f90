@@ -50,6 +50,18 @@
     procedure :: InitProbDist => BAO_DR11_InitProbDist
     end type
 
+
+    Type, extends(TBAOLikelihood) :: DRLyautoLikelihood
+        real(mcp), allocatable, dimension(:) :: alpha_perp_file,alpha_plel_file
+        real(mcp), allocatable ::  prob_file(:,:)
+        real(mcp) dalpha_perp, dalpha_plel
+        integer alpha_npoints
+    contains
+    procedure :: LogLike => BAO_DRLyauto_loglike
+    procedure :: InitProbDist => BAO_DRLyauto_InitProbDist
+    end type
+
+
     Type, extends(TBAOLikelihood) :: MGSLikelihood
         real(mcp), allocatable :: alpha_prob(:)
     contains
@@ -84,6 +96,9 @@
             allocate(MGSLikelihood::this)
         else if (Datasets%Name(i)=='DR11CMASS') then
             allocate(DR11Likelihood::this)
+        else if (Datasets%Name(i)=='Lyauto') then
+           print *, 'hwiouedhuwe'
+            allocate(DRLyautoLikelihood::this)
         else
             allocate(TBAOLikelihood::this)
         end if
@@ -117,15 +132,25 @@
     call Ini%Read_Enumeration_List('measurement_type',measurement_types, this%type_bao, nvalues = this%num_bao)
 
     if (Ini%HasKey('zeff')) then
-!        this%bao_z = Ini%Read_Double('zeff')
         bao_measurement  = Ini%Read_String('bao_measurement')
-        zeff = Ini%Read_String('zeff')
-        if (this%num_bao>1) then
-            read (bao_measurement,*) this%bao_obs(:) 
-            read (zeff,*) this%bao_z(:)
-        else
-            read (bao_measurement,*) this%bao_obs(1),this%bao_err(1)
-        end if
+        if (this%num_bao == 1) then
+           this%bao_z = Ini%Read_Double('zeff')
+           read (bao_measurement,*) this%bao_obs(1),this%bao_err(1)
+        else          
+           zeff = Ini%Read_String('zeff')
+           read (bao_measurement,*) this%bao_obs(:)
+           read (zeff,*) this%bao_z(:)
+        endif
+
+!        this%bao_z = Ini%Read_Double('zeff')
+!        bao_measurement  = Ini%Read_String('bao_measurement')
+!        zeff = Ini%Read_String('zeff')
+!        if (this%num_bao>1) then
+!            read (bao_measurement,*) this%bao_obs(:) 
+!            read (zeff,*) this%bao_z(:)
+!        else
+!            read (bao_measurement,*) this%bao_obs(1),this%bao_err(1)
+!        end if
     else
         bao_measurements_file = Ini%ReadRelativeFileName('bao_measurements_file')
         call F%Open(bao_measurements_file)
@@ -313,6 +338,7 @@
         endif
     endif
 
+    if(feedback>1) write(*,*) trim(this%name)//' BAO likelihood = ',BAO_DR11_loglike
     end function BAO_DR11_loglike
 
 
@@ -348,8 +374,121 @@
         chi2 = (this%alpha_prob(ii) + this%alpha_prob(ii+1))/2.0
         BAO_MGS_loglike = chi2/2.0
     endif
-
+    if(feedback>1) write(*,*) trim(this%name)//' BAO likelihood =',BAO_MGS_loglike
     end function BAO_MGS_loglike
+
+
+    !!!DR11 CMASS
+
+    subroutine BAO_DRLyauto_InitProbDist(this, Ini)
+    class(DRLyautoLikelihood) this
+    class(TSettingIni) :: Ini
+    real(mcp) :: tmp0,tmp1,tmp2, tmp3,tmp4, tmp
+    integer ios,ii,jj, nn
+    Type(TTExtFile) F
+    integer :: alpha_npoints
+
+    alpha_npoints = Ini%Read_Int('alpha_npoints')
+    allocate(this%alpha_perp_file(alpha_npoints),this%alpha_plel_file(alpha_npoints))
+    allocate(this%prob_file(alpha_npoints,alpha_npoints))
+
+    
+    call F%Open(Ini%ReadRelativeFileName('prob_dist'))
+    
+    !JaV
+    ios = 0
+    nn = 0
+    do while (ios.eq.0)
+        read (F%unit,*,iostat=ios) tmp0,tmp1,tmp2,tmp3,tmp4
+        if (ios .ne. 0) cycle
+        nn = nn + 1
+
+        ii = 1 + mod((nn-1),alpha_npoints)
+        jj = 1 + ((nn-1)/alpha_npoints)
+        this%alpha_perp_file(ii)   = tmp0
+        this%alpha_plel_file(jj)   = tmp1
+        this%prob_file(ii,jj)      = tmp4/2.0  !prob got from chis2
+    enddo
+
+    !do ii=1, alpha_npoints
+    !    do jj=1, alpha_npoints
+    !        read (F%unit,*,iostat=ios) tmp0,tmp1,tmp2
+    !        if (ios /= 0) call MpiStop('Error reading BR11 BAO file')
+    !        this%alpha_perp_file(ii)   = tmp0
+    !        this%alpha_plel_file(jj)   = tmp1
+    !        this%prob_file(ii,jj)      = tmp2
+    !    end do
+    !end do
+    call F%Close()
+
+    this%dalpha_perp=this%alpha_perp_file(2)-this%alpha_perp_file(1)
+    this%dalpha_plel=this%alpha_plel_file(2)-this%alpha_plel_file(1)
+    !Normalize distribution (so that the peak value is 1.0)
+
+    !this%prob_file=this%prob_file/ maxval(this%prob_file)
+    this%alpha_npoints = alpha_npoints
+
+
+    tmp=1.d30
+    do ii=1,alpha_npoints
+    do jj=1,alpha_npoints
+        if(this%prob_file(ii,jj).lt.tmp) then
+           tmp = this%prob_file(ii,jj)
+        endif
+    enddo
+    enddo
+    
+    !JaV   
+    !Normalize distribution (so that the peak value is 1.0)
+    do ii=1,alpha_npoints
+    do jj=1,alpha_npoints
+        this%prob_file(ii,jj) = exp(-this%prob_file(ii,jj) + tmp)
+    enddo
+    enddo
+
+    end subroutine BAO_DRLyauto_InitProbDist
+
+
+    function BAO_DRLyauto_loglike(this, CMB, Theory, DataParams)
+    Class(DRLyautoLikelihood) :: this
+    Class(CMBParams) CMB
+    Class(TCosmoTheoryPredictions), target :: Theory
+    real(mcp) :: DataParams(:)
+    real (mcp) z, BAO_DRLyauto_loglike, alpha_perp, alpha_plel, prob
+    !JaV
+    real,parameter::rd_fid=149.6560,H_fid=232.184690671117,DA_fid=1731.32745289946    
+    !real,parameter :: rd_fid=149.28,H_fid=93.558,DA_fid=1359.72 !fiducial parameters
+    integer ii,jj
+    real(mcp) rsdrag_theory, ckm
+
+    ckm = const_c/1e3_mcp
+    z = this%bao_z(1)
+    rsdrag_theory = this%get_rs_drag(Theory)
+
+    alpha_perp=(this%Calculator%AngularDiameterDistance(z)/rsdrag_theory)/(DA_fid/rd_fid)
+    alpha_plel=(H_fid*rd_fid)/((this%Calculator%Hofz_Hunit(z))*rsdrag_theory)
+    print *, 'alphas', alpha_perp, alpha_plel
+
+    if ((alpha_perp < this%alpha_perp_file(1)).or.(alpha_perp >this%alpha_perp_file(this%alpha_npoints-1)).or. &
+        &   (alpha_plel < this%alpha_plel_file(1)).or.(alpha_plel >this%alpha_plel_file(this%alpha_npoints-1))) then
+    BAO_DRLyauto_loglike = logZero
+    else
+        ii=1+floor((alpha_perp-this%alpha_perp_file(1))/this%dalpha_perp)
+        jj=1+floor((alpha_plel-this%alpha_plel_file(1))/this%dalpha_plel)
+        prob=(1./((this%alpha_perp_file(ii+1)-this%alpha_perp_file(ii))*(this%alpha_plel_file(jj+1)-this%alpha_plel_file(jj))))*& 
+            &(this%prob_file(ii,jj)*(this%alpha_perp_file(ii+1)-alpha_perp)*(this%alpha_plel_file(jj+1)-alpha_plel)&
+            &-this%prob_file(ii+1,jj)*(this%alpha_perp_file(ii)-alpha_perp)*(this%alpha_plel_file(jj+1)-alpha_plel)&
+            &-this%prob_file(ii,jj+1)*(this%alpha_perp_file(ii+1)-alpha_perp)*(this%alpha_plel_file(jj)-alpha_plel)&
+            &+this%prob_file(ii+1,jj+1)*(this%alpha_perp_file(ii)-alpha_perp)*(this%alpha_plel_file(jj)-alpha_plel))
+        if  (prob > 0) then
+            BAO_DRLyauto_loglike = -log( prob )
+        else
+            BAO_DRLyauto_loglike = logZero
+        endif
+    endif
+    if(feedback>1) write(*,*) trim(this%name)//' BAO likelihood =',BAO_DRLyauto_loglike
+    end function BAO_DRLyauto_loglike
+
 
 
     end module bao
