@@ -9,9 +9,9 @@ file_output = dir + 'CosmologicalParameters{}.tex'.format(table)
 
 if table == 1:
     models  = ['LCDM', 'OkLCDM', 'woCDM', 'OkwoCDM', 'wowaCDM', 'OkwowaCDM']
-    datas   = ['PLK', 'PLK+BAO12', 'PLK+JLA', 'PLK+DR12', 'PLK+DR12+ALLB', 'PLK+DR12+JLA', 'PLK+DR12+ALLB+JLA']
+    datas   = ['PLK', 'PLK+JLA', 'PLK+BAO12+ALLB', 'PLK+DR12+ALLB', 'PLK+DR12+ALLB+JLA']
     params  = ['Omh2', 'Om', 'H0', 'Ok', 'w', 'wa']
-    colsize = (2., 3.5, 1.6, 1.6, 1.6, 2., 1.6, 1.6)    #In centimeters
+    colsize = (1.8, 3.3, 1.6, 1.5, 1.6, 1.9, 1.6, 1.6)    #In centimeters
     decimal = (4, 3, 1, 4, 2, 2)                         #decimal points
 
 elif table == 2:
@@ -20,14 +20,14 @@ elif table == 2:
                'LCDM_Afs8','LCDM_ABfs8']
     datas   = ['PLK+DR12+ALLB']
     params  = ['H0', 'mnu', 'Alens', 'Afs8', 'ABfs8', 'sigma8']
-    colsize = (3.5, 2.8, 2., 1.5, 1.5, 1.5, 1.5, 1.5)
-    decimal = (1, 2, 2, 2, 1, 2)
+    colsize = (3.3, 2.5, 1.6, 1.5, 1.5, 1.5, 1.5, 1.5)
+    decimal = (1, 2, 2, 2, 2, 2)
 
 else:
     models  = ['Neff', 'OkwoCDM+Neff']
     datas   = ['PLK', 'PLK+DR12+ALLB', 'PLK+DR12+ALLB+HST', 'PLK+DR12+ALLB+JLA', 'PLK+DR12+ALLB+JLA+HST']
     params  = ['Omh2', 'Om', 'H0', 'Ok', 'w', 'Neff']
-    colsize = (2., 3.8, 1.6, 1.6, 2., 1.6, 1.6, 1.6 )
+    colsize = (2., 3.6, 1.6, 1.6, 1.6, 1.6, 1.6, 1.6 )
     decimal = [4, 3, 1, 4, 2, 2]
 
 
@@ -50,7 +50,7 @@ params_latex = {'Omh2':'$\Omega_{\\rm m} h^{2}$', 'Om':'$\Omega_{\\rm m}$',
 latex_names  = {'LCDM':'$\\Lambda$CDM', 'OkLCDM':'$o$CDM', 'woCDM':'$w$CDM',
                 'wowaCDM':'$w_0w_a$CDM', 'HST':'$H_0$',
                 'OkwoCDM':'$ow$CDM', 'OkwowaCDM':'$ow_0w_a$CDM',
-                'PLK':'Planck', 'DR12':'BAO12 + RSD', 'ALLB':'BAO + RSD', 'JLA':'SN',
+                'PLK':'Planck', 'DR12':'BAO12 + FS', 'ALLB':'BAO + FS', 'JLA':'SN','BAO12':'BAO',
                 'mnu':'$m_{\\nu}$', 'Neff':'$N_{\\rm eff}$',
                 'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$A_{f\sigma_8}$ + $B_{f\sigma_8}$'}
 
@@ -78,6 +78,7 @@ def main_table(model, data):
     full_line = []
     if not 'CDM' in model: model='LCDM_'+ model
     if 'DR12' in data and 'ALLB' in data: data = data.replace('DR12+', '')
+    if 'BAO12' in data and 'ALLB' in data: data = data.replace('+ALLB', '')
 
     if 'OkwoCDM+Neff' in model: model=model.replace('+','_')
 
@@ -91,7 +92,10 @@ def main_table(model, data):
                 full_line.append('$<$ %1.2f'%(float(stats.ix[params_getdist[k]]['upper2'])))
             else:
                 mean_values = tmp%(float(stats.ix[params_getdist[k]]['mean']))
-                sigma_values= float(stats.ix[params_getdist[k]]['sddev'])*10**(decimal[i])
+
+                sigma_tmp= float(stats.ix[params_getdist[k]]['sddev'])
+                sigma_values = round(sigma_tmp, decimal[i])*10**(decimal[i])
+
                 full_line.append('$%s\ (%i)$'%(mean_values, sigma_values))
         except:
             full_line.append('...')
@@ -113,7 +117,7 @@ outputfile.write(r"\hline"+'\n')
 pnames, amps = [], []
 for i, k in enumerate(params):
      pnames.append(params_latex[k])
-     if   'H0'  in k: amps.append('km s$^{-1}$ Mpc$^{-1}$')
+     if   'H0'  in k: amps.append('km/s/Mpc')
      elif 'mnu' in k: amps.append(('95\\% limit'))
      else:            amps.append('')
 
@@ -134,12 +138,13 @@ for model in models:
                       names= file_names)
             full_line = main_table(model, data)
             outputfile.write(r"%s                     \\"%("&".join(full_line))  +'\n')
-            i+=1
-            if i == 4 or i == 6:
+            if (table == 2):
+             i+=1
+             if i == 4 or i == 6:
                 outputfile.write(r"\hline"                                               +'\n')
         except:
             pass
-    #outputfile.write(r"\hline"                                               +'\n')
+    if (table != 2):outputfile.write(r"\hline"                                               +'\n')
 #outputfile.write(r"\hline"                                               +'\n')
 
 
