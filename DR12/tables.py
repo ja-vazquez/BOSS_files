@@ -3,7 +3,7 @@
 import pandas as pd
 
 dir  = 'table/'
-table = 2
+table = 1
 file_output = dir + 'CosmologicalParameters{}.tex'.format(table)
 
 
@@ -44,7 +44,7 @@ params_getdist = {'Omh2':'omegamh2*', 'Om':'omegam*', 'H0': 'H0*', 'Ok':'omegak'
 
 params_latex = {'Omh2':'$\Omega_{\\rm m} h^{2}$', 'Om':'$\Omega_{\\rm m}$',
                 'H0':'$H_0$', 'Ok':'$\Omega_{\\rm K}$', 'w':'$w_0$', 'wa':'$w_a$',
-                'Neff':'$N_{\\rm eff}$', 'mnu':'$\sum m_{\\nu}$', 'sigma8':'$\\sigma_8$',
+                'Neff':'$N_{\\rm eff}$', 'mnu':'$\sum m_{\\nu}$ [eV]', 'sigma8':'$\\sigma_8$',
                 'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$B_{f\sigma_8}$'}
 
 latex_names  = {'LCDM':'$\\Lambda$CDM', 'OkLCDM':'$o$CDM', 'woCDM':'$w$CDM',

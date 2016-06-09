@@ -149,16 +149,17 @@ g.export('OkwoCDM_3.pdf')
 
 
 
-roots = ['OkwoCDM_PLK+JLA', 'OkwoCDM_PLK+BAO12', 'OkwoCDM_PLK+DR12', 'OkwoCDM_PLK+DR12+JLA']
+roots = ['OkwoCDM_PLK+JLA', 'OkwoCDM_PLK+BAO12+ALLB', 'OkwoCDM_PLK+DR12+ALLB', 'OkwoCDM_PLK+DR12+ALLB+JLA']
 g= plots.getSinglePlotter(chain_dir = dir_name, ratio=1.,
-                          analysis_settings={'smooth_scale_2D': -1. , 'ignore_rows': 0.2})
-g.plot_2d(roots, param_pair=['omegak','w'], filled=True, legend_labels=False, line_args={'lw':2,  'ls':'-'})
+                          analysis_settings={'smooth_scale_2D': -1. , 'ignore_rows': 0.1})
+g.plot_2d(roots, param_pair=['omegak','w'], filled=True, legend_labels=False, line_args={'lw':2,  'ls':'-'},
+          colors = ['green', 'gray', 'red', 'blue'], alphas=[0.8,0.8,0.8,0.8])
 g.settings.axes_fontsize = 20
 g.settings.lab_fontsize = 25
 g.settings.alpha_filled_add =0.9
 g.add_y_marker(-1)
 g.add_x_marker(0)
-g.add_legend(['PLANCK+SN', 'PLANCK+BAO', 'PLANCK+BAO+RSD', 'PLANCK+BAO+FS+SN'],
+g.add_legend(['PLANCK+SN', 'PLANCK+BAO', 'PLANCK+BAO+FS', 'PLANCK+BAO+FS+SN'],
              colored_text=True,  legend_loc='lower right')
 g.export('OkwoCDM_all.pdf')
 
