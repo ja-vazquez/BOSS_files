@@ -17,11 +17,11 @@ if table == 1:
 elif table == 2:
     models  = ['mnu', 'mnu_Alens', 'mnu_Afs8', 'mnu_Alens_Afs8',
               #'Neff', 'Neff_Alens', 'Neff_Afs8', 'Neff_Alens_Afs8', 'Neff_mnu', 'Neff_mnu',
-               'LCDM_Afs8','LCDM_ABfs8']
-    datas   = ['PLK+DR12+ALLB']
-    params  = ['H0', 'mnu', 'Alens', 'Afs8', 'ABfs8', 'sigma8']
-    colsize = (3.3, 2.5, 1.6, 1.5, 1.5, 1.5, 1.5, 1.5)
-    decimal = (1, 2, 2, 2, 2, 2)
+               'LCDM_Afs8','LCDM_ABfs8', 'OkwoCDM_mnu', 'OkwoCDM_Afs8_ABfs8']
+    datas   = ['PLK+DR12+ALLB', 'PLK+DR12+ALLB+JLA']
+    params  = ['mnu', 'Alens', 'Afs8', 'ABfs8', 'sigma8', 's8omegamp5']
+    colsize = (3.3, 2.9, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5)
+    decimal = (2, 2, 2, 2, 3, 3)
 
 else:
     models  = ['Neff', 'OkwoCDM+Neff']
@@ -40,12 +40,13 @@ assert len(params) is len(decimal)
 
 params_getdist = {'Omh2':'omegamh2*', 'Om':'omegam*', 'H0': 'H0*', 'Ok':'omegak',
                   'w':'w', 'wa':'wa', 'Neff':'nnu', 'mnu':'mnu', 'Alens':'Alens',
-                  'Afs8':'Afs8', 'ABfs8':'Bfs8', 'sigma8':'sigma8*'}
+                  'Afs8':'Afs8', 'ABfs8':'Bfs8', 'sigma8':'sigma8*', 's8omegamp5':'s8omegamp5*'}
 
 params_latex = {'Omh2':'$\Omega_{\\rm m} h^{2}$', 'Om':'$\Omega_{\\rm m}$',
                 'H0':'$H_0$', 'Ok':'$\Omega_{\\rm K}$', 'w':'$w_0$', 'wa':'$w_a$',
-                'Neff':'$N_{\\rm eff}$', 'mnu':'$\sum m_{\\nu}$ [eV]', 'sigma8':'$\\sigma_8$',
-                'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$B_{f\sigma_8}$'}
+                'Neff':'$N_{\\rm eff}$', 'mnu':'$\sum m_{\\nu}$~[eV/$c^2$]', 'sigma8':'$\\sigma_8$',
+                'Alens':'$A_L$', 'Afs8':'$A_{f\sigma_8}$', 'ABfs8':'$B_{f\sigma_8}$',
+                's8omegamp5': '$\Omega_{\\rm m}^{0.5}~\\sigma_8$'}
 
 latex_names  = {'LCDM':'$\\Lambda$CDM', 'OkLCDM':'$o$CDM', 'woCDM':'$w$CDM',
                 'wowaCDM':'$w_0w_a$CDM', 'HST':'$H_0$',
@@ -61,6 +62,7 @@ def convert_to_latex(model, sep):
     """some names require latex convention"""
 
     models = dict(enumerate(model.split(sep)))
+
     full_name = []
 
     for name in models.values():
@@ -76,11 +78,13 @@ def convert_to_latex(model, sep):
 def main_table(model, data):
     """write its mean/sddev for params in each model"""
     full_line = []
+
     if not 'CDM' in model: model='LCDM_'+ model
     if 'DR12' in data and 'ALLB' in data: data = data.replace('DR12+', '')
     if 'BAO12' in data and 'ALLB' in data: data = data.replace('+ALLB', '')
 
     if 'OkwoCDM+Neff' in model: model=model.replace('+','_')
+    if 'OkwoCDM_Afs8_ABfs8' in model: model=model.replace('_Afs8','')
 
     full_line.append(convert_to_latex(model, sep ='_'))
     full_line.append(convert_to_latex(data, sep ='+'))
@@ -96,7 +100,10 @@ def main_table(model, data):
                 sigma_tmp= float(stats.ix[params_getdist[k]]['sddev'])
                 sigma_values = round(sigma_tmp, decimal[i])*10**(decimal[i])
 
-                full_line.append('$%s\ (%i)$'%(mean_values, sigma_values))
+
+                sign = '+' if 'Ok' in k and float(mean_values)>0 else ''
+
+                full_line.append('$%s%s\ (%i)$'%(sign, mean_values, sigma_values))
         except:
             full_line.append('...')
 
@@ -132,7 +139,9 @@ file_names = ['parameter', 'mean', 'sddev', 'lower1', 'upper1', 'limit1', 'lower
 i =0
 for model in models:
     for data in datas:
+
         name =  dir + model + '_' + data + '.margestats'
+
         try:
             stats = pd.read_table(name, skiprows = [0,1], sep='\s+', index_col = 0,
                       names= file_names)

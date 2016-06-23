@@ -13,7 +13,7 @@ g.settings.lab_fontsize = 20
 g.settings.alpha_filled_add =0.9
 g.plots_2d(roots, param_pairs=[['omegak','w'], ['omegak','H0'], ['w','H0']], nx=3, filled=True,
            legend_labels=False, line_args={'lw':2,  'ls':'-'})
-g.add_legend(['PLANCK + DR12 LOWZ+CMASS', 'PLANCK + DR12 BAO', 'PLANCK + DR12 BAO+FS'],
+g.add_legend(['PLANCK + LOWZ+CMASS', 'PLANCK + BAO', 'PLANCK + BAO+FS'],
              colored_text=True,  legend_loc='upper right')
 g.export('comp_lowz.pdf')
 
@@ -52,7 +52,7 @@ g.export('mg.pdf')
 if True:
     roots = ['mnu_Alens_Afs8_PLK+DR12+ALLB', 'mnu_Alens_PLK+DR12+ALLB',  'mnu_Afs8_PLK+DR12+ALLB', 'mnu_PLK+DR12+ALLB']
     g = plots.getSinglePlotter(chain_dir= dir_name,
-                               analysis_settings={'smooth_scale_2D': -1. , 'ignore_rows': 0.1})
+                               analysis_settings={'smooth_scale_2D': -1. , 'ignore_rows': 0.2})
     g.settings.axes_fontsize = 18
     g.settings.lab_fontsize = 20
     g.settings.alpha_filled_add =0.9
@@ -70,7 +70,7 @@ if True:
 
 roots = ['mnu_Alens_Afs8_PLK+DR12+ALLB', 'mnu_Alens_PLK+DR12+ALLB',  'mnu_Afs8_PLK+DR12+ALLB', 'mnu_PLK+DR12+ALLB']
 g = plots.getSinglePlotter(chain_dir= dir_name,
-                           analysis_settings={'smooth_scale_1D': -1. , 'ignore_rows': 0.1})
+                           analysis_settings={'smooth_scale_1D': -1. , 'ignore_rows': 0.2})
 g.settings.axes_fontsize = 20
 g.settings.lab_fontsize = 25
 g.settings.alpha_filled_add =0.9
@@ -79,7 +79,7 @@ g.settings.legend_frame = False
 
 g.plot_1d(roots, 'mnu', legend_labels=False, colors = ['green', 'gray', 'red', 'blue'])
 g.add_legend(['$\sum m_{\\nu}$+$A_L$+$A_{f\sigma_8}$',
-              ' $\sum m_{\\nu}$+$A_L$',
+              '$\sum m_{\\nu}$+$A_L$',
                 '$\sum m_{\\nu}$+$A_{f\sigma_8}$',
              '$\sum m_{\\nu}$ '],
                legend_loc='upper right')
@@ -142,7 +142,7 @@ g.settings.axes_fontsize = 20
 g.settings.lab_fontsize = 25
 g.settings.alpha_filled_add =0.9
 g.add_x_marker(-1)
-g.add_legend(['PLANCK + DR12 LOWZ+CMASS', 'PLANCK + DR12 BAO', 'PLANCK + DR12 BAO+FS'],
+g.add_legend(['PLANCK+LOWZ+CMASS', 'PLANCK+BAO', 'PLANCK+BAO+FS'],
 		             colored_text=True,  legend_loc='upper right')
 g.export('OkwoCDM_3.pdf')
 
@@ -176,7 +176,7 @@ g.settings.lab_fontsize = 25
 g.settings.alpha_filled_add =0.9
 g.add_y_marker(0)
 g.add_x_marker(-1)
-g.add_legend(['PLANCK+SN','PLANCK+BAO', 'PLANCK+BAO+RSD', 'PLANCK+BAO+FS+SN'],
+g.add_legend(['PLANCK+SN','PLANCK+BAO', 'PLANCK+BAO+FS', 'PLANCK+BAO+FS+SN'],
              colored_text=True,  legend_loc='upper right')
 g.export('wowaCDM_all.pdf')
 
