@@ -3,7 +3,7 @@ from Useful import *
 
 
 
-N_cores = 20
+N_cores = 30
 threads = 5
 chains_dir = 'chains/'
 to_do = 'all'
