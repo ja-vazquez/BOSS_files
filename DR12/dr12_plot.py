@@ -76,6 +76,10 @@ g.settings.lab_fontsize = 25
 g.settings.alpha_filled_add =0.9
 g.settings.legend_fontsize = 15
 g.settings.legend_frame = False
+g.add_x_marker(0.16, color='blue')
+g.add_x_marker(0.23, color='gray')
+g.add_x_marker(0.15, color='red')
+g.add_x_marker(0.25, color='green')
 
 g.plot_1d(roots, 'mnu', legend_labels=False, colors = ['green', 'gray', 'red', 'blue'])
 g.add_legend(['$\sum m_{\\nu}$+$A_L$+$A_{f\sigma_8}$',
