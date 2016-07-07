@@ -17,10 +17,12 @@ class Tasks:
     def __init__(self, model, dataset, chains_dir):
         self.model = model
         self.dataset = dataset
-        self.full_name = self.model + '_' + self.dataset
+        self.full_name =  self.model + '_' + self.dataset
 	self.chains  = chains_dir
 
-
+	self.chains_is = chains_dir.replace('/','_IS/')
+	self.imp_full_name = 'IS_' +  self.full_name
+	
     def write_ini(self):
         """Write params.ini files used by CosmoMC to run the chains"""
         with open('INI_' + self.model + '_' + self.dataset + '.ini', 'w') as f:
@@ -44,6 +46,8 @@ DEFAULT(batch2/lowTEB.ini)
 
             #write main file
             f.write('DEFAULT(DR12_INI.ini) \n\n')
+	    f.write('#use when action=1\n')
+	    f.write('redo_outroot = %s%s \n\n'%(self.chains_is, self.imp_full_name))
 	    f.write('#Folder where files (chains, checkpoints, etc.) are stored \n')
 	    f.write('root_dir = %s \n\n'%(self.chains))
 
@@ -57,7 +61,6 @@ DEFAULT(batch2/lowTEB.ini)
             f.write('param[Alens]  = 1 %s \n'%('0 2 0.1 0.1'          if 'Alens' in self.model else ''))
             f.write('param[Afs8]   = 1 %s \n'%('0 2 0.1 0.1'          if ('Afs8' in self.model or 'ABfs8' in self.model) else ''))
             f.write('param[Bfs8]   = 0 %s \n'%('-2 1 0.1 0.1'         if 'ABfs8' in self.model else ''))
-
 
 
 
