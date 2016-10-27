@@ -1,3 +1,4 @@
+    !BAO_FS used in the paper arXiv:1607.03155
     !BAO, f_sigma8 and other measurements at single redshifts, with correlations
 
     !AL/JH Oct 2012: encorporate DR9 data into something close to new cosmomc format
@@ -237,7 +238,7 @@
     rs = this%get_rs_drag(Theory) * this%rs_rescale
    
     do j=1, this%num_bao
-!JaV now is an array
+!JaV, z now is an array
         z= this%bao_z(j)
         select case(this%type_bao(j))
         case (bao_DV_over_rs)
@@ -249,7 +250,7 @@
         case (bao_Az)
             BAO_theory(j) = this%Acoustic(CMB,z)
         case (bao_DA_over_rs)
-!JaV now is comoving
+!JaV, DA now is comoving
             BAO_theory(j) = this%Calculator%AngularDiameterDistance(z)/rs*(1+z)
         case (F_AP)
             BAO_theory(j) = (1+z)*this%Calculator%AngularDiameterDistance(z)* &
