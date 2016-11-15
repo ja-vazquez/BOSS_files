@@ -20,8 +20,11 @@ class Tasks:
         self.full_name =  self.model + '_' + self.dataset
 	self.chains  = chains_dir
 
-	self.chains_is = chains_dir.replace('/','_IS/')
-	self.imp_full_name = 'IS_' +  self.full_name
+	#importance sampling
+	importance = False
+
+	self.chains_is = chains_dir.replace('/','_IS/') if importance else self.chains
+	self.imp_full_name = 'IS_' +  self.full_name if importance else self.full_name
 	
     def write_ini(self):
         """Write params.ini files used by CosmoMC to run the chains"""
@@ -43,6 +46,7 @@ DEFAULT(batch2/lowTEB.ini)
 	    if 'ALLB'  in self.dataset: f.write('DEFAULT(batch2/BAO.ini) \n\n') 
             if 'JLA'   in self.dataset: f.write('DEFAULT(batch2/JLA.ini) \n\n')
 	    if 'HST'   in self.dataset: f.write('DEFAULT(batch2/HST.ini) \n\n')
+	    if 'BAO11' in self.dataset: f.write('DEFAULT(batch2/BAODR11.ini) \n\n')
 
             #write main file
             f.write('DEFAULT(DR12_INI.ini) \n\n')

@@ -5,7 +5,7 @@ from Useful import *
 
 N_cores = 20
 threads = 5
-chains_dir = 'chains/'
+chains_dir = 'chains_Lya/'
 to_do = 'all'
 
 
